@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dadstraction</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <h1 class="navbar-brand mb-0 text-light">Welcome to Dadstraction, {{user.first_name}}!!!</h1>
+        <div class="d-flex col-4 justify-content-around">
+            <a href="/create/joke" class="btn btn-primary">Post a Joke!</a>
+            <a href="/add_photo" class="btn btn-info">Profile Picture</a>
+            <a href="/logout" class="btn btn-info">Logout</a>
+        </div>
+        <div class="navbar-brand d-flex align-items-center">
+            <div class="profile-pic-container">
+                {% if user.photo %}
+                <img id="profile-picture" src="{{ url_for('uploaded_files', filename=user.photo.replace('\\', '/') if user.photo else '/default_profile_picture.jpg') }}" alt="Profile Picture" class="img-thumbnail d-block mx-auto" style="max-height: 80px; max-width: 80px;">
+                {% else %}
+                <img id="default-profile-picture" src="{{ url_for('static', filename='default_profile_picture.jpg') }}" alt="Default Profile Picture" class="img-thumbnail d-block mx-auto" style="max-height: 80px; max-width: 80px;">
+                {% endif %}                
+            </div>
+        </div>
+    </nav>
+    <div class="col-8 mx-auto">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Posted By: </th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for joke in jokes %}
+                    <tr>
+                        <td>{{joke.title}}</td>
+                        <td>{{joke.users.first_name}} {{joke.users.last_name}}</td>
+                        <td>
+                            {% if joke.user_id != session.user_id %}
+                            <a href="/joke/{{joke.id}}">View </a>
+                            {% endif %}
+                            {% if joke.user_id == session.user_id %}
+                            <a href="/joke/{{joke.id}}">View |</a>
+                            <a href="/edit/joke/{{joke.id}}"> Edit |</a>
+                            <a href="/destroy/joke/{{joke.id}}">Delete</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

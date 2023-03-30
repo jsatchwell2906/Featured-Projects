@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dadstraction</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #343a40;
+        }
+        .form-container {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 50px;
+        }
+        h1 {
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="d-flex col-4 justify-content-end">
+            <a href="/dashboard" class="btn btn-info mr-2">Dashboard</a>
+            <a href="/logout" class="btn btn-info">Logout</a>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-sm-12">
+                <h1 class="text-center mb-4">Upload Profile Photo</h1>
+                <form action="/upload_profile_picture" method="post" enctype="multipart/form-data" class="form-container">
+                    <div class="form-group">
+                        <label for="picture">Choose a picture:</label>
+                        {% if session['profile_picture'] %}
+                            <img id="profile-picture" src="{{url_for('static', filename=session['profile_picture'])}}" alt="profile-picture" class="img-thumbnail d-block mx-auto">
+                        {% else %}
+                            <img id="default-profile-picture" src="{{url_for('static', filename='default_profile_picture.jpg')}}" alt="default-profile-picture" class="img-thumbnail d-block mx-auto">
+                        {% endif %}
+                        <input type="file" id="picture" name="file" class="form-control-file mt-4" accept="image/*">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block mt-4">Upload Picture</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        const fileInput = document.getElementById('picture');
+        fileInput.addEventListener('change', (event) => {
+            const selectedFile = event.target.files[0];
+            if (!selectedFile.type.startsWith('image/')) {
+                alert('Please choose an image file.');
+                fileInput.value = '';
+                return;
+            }
+            const selectedFileUrl = URL.createObjectURL(selectedFile);
+            const imgElement = document.getElementById('profile-picture');
+            imgElement.setAttribute('src', selectedFileUrl);
+        });
+    </script>
+</body>
+</html>
